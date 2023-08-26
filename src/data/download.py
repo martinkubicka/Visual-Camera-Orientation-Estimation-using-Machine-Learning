@@ -1,3 +1,7 @@
+"""
+Credit goes to the original author and contributors of the 'streetview' repository: https://github.com/robolyst/streetview.
+"""
+
 import itertools
 import time
 from dataclasses import dataclass
