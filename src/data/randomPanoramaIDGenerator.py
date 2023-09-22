@@ -8,6 +8,7 @@
 import urllib.parse
 import random
 import requests
+from mapillaryImageGenerator import getMapillaryImage
 
 PANO_METADATA_URL = 'https://maps.googleapis.com/maps/api/streetview/metadata?'
 
@@ -40,8 +41,10 @@ def checkIfPanoExists(url):
     response = requests.get(url).json()
 
     if response.get("status") == "OK":
+        print("Panorama found.")
         return True, response.get("pano_id")
     else:
+        print("Panorama not found on given coordinates.\nGetting new mappilary image and panorama..")
         return False, None
 
 """
@@ -57,7 +60,7 @@ def getPanoMetadataUrl(latitude, longitude, API_KEY):
     params = {
         'location': f'{latitude},{longitude}',
         'key': API_KEY,
-        'radius': 10000,
+        'radius': 3,
     }
 
     requestUrl = PANO_METADATA_URL + urllib.parse.urlencode(params)
@@ -65,24 +68,32 @@ def getPanoMetadataUrl(latitude, longitude, API_KEY):
     return requestUrl
 
 """
-@brief Main function for getting random panorama ID.
+@brief Main function for getting random panorama ID and mapillary image. Panorama is based on mapillary image latitude and longitude.
 
 @param API_KEY Api key for accessing google streetview static APIs.
 
-@return Panorama ID.
+@return google streetview panorama ID, mapillary image ID, latitude, longitude, pitch, yaw, roll of a image
 """
-def getRandomPanoID(API_KEY):
-    latitude, longitude, url, pano = None, None, None, (False, None)
+def getRandomPanoID(API_GOOGLE_KEY, API_MAPILLARY_KEY):
+    latitude, longitude, url, pano, mappilaryImageExists = None, None, None, (False, None), False
 
-    print("Getting panorama id..")
+    print("Getting mapillary image id and streetview panorama id..")
 
-    while latitude == None or not pano[0]:
+    while latitude == None or not pano[0] or not mappilaryImageExists:
         latitude = getRandomLatitude()
         longitude = getRandomLongitude()
-        url = getPanoMetadataUrl(latitude, longitude, API_KEY)
+
+        # at first we are getting mapillary image
+        mappilaryImage = getMapillaryImage(API_MAPILLARY_KEY, longitude, latitude)
+        if mappilaryImage[0]:
+            mappilaryImageExists = True
+        else:
+            continue
+
+        # then we are getting panorama image
+        url = getPanoMetadataUrl(mappilaryImage[2], mappilaryImage[1], API_GOOGLE_KEY)
         pano = checkIfPanoExists(url)
 
-    print("Panorama id: " + pano[1])
-    return pano[1]
+    return pano[1], mappilaryImage[6], mappilaryImage[2], mappilaryImage[1], mappilaryImage[3], mappilaryImage[4], mappilaryImage[5]
 
 ### End of randomPanoramaIDGenerator.py ###
