@@ -1,6 +1,7 @@
 from PIL import Image
 import os
 import csv
+import math
 
 def getData():
     dataFolder = "../data/panoramas"
@@ -39,6 +40,15 @@ def preprocess(data):
         # pitch, yaw, roll
         with open("./data/" + i[1].split("/")[-1].replace("_photo.jpg", "") + ".csv", mode='w', newline='') as file:
             writer = csv.writer(file)
+
+            # yaw not negative number
+            if (float(i[2][1]) < 0):
+                i[2][1] = str(2 * math.pi + float(i[2][1]))
+
+            # roll not negative number
+            if (float(i[2][2]) < 0):
+                i[2][2] = str(2 * math.pi + float(i[2][2]))
+
             writer.writerow(i[2])
 
 if __name__ == '__main__':
