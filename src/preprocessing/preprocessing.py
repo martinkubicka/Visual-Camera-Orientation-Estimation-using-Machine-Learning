@@ -27,29 +27,32 @@ def preprocess(data):
     panoramaResolution = (4096, 2048)
     
     for i in data:
-        # panorama
-        panorama = Image.open(i[0])
-        resizedPanorama = panorama.resize(panoramaResolution)
-        resizedPanorama.save("./data/" + i[0].split("/")[-1])
-        
-        # image
-        image = Image.open(i[1])
-        resizedImage = image.resize(imageResolution)
-        resizedImage.save("./data/" + i[1].split("/")[-1])
-        
-        # pitch, yaw, roll
-        with open("./data/" + i[1].split("/")[-1].replace("_photo.jpg", "") + ".csv", mode='w', newline='') as file:
-            writer = csv.writer(file)
+        try:
+            # panorama
+            panorama = Image.open(i[0])
+            resizedPanorama = panorama.resize(panoramaResolution)
+            resizedPanorama.save("./data/" + i[0].split("/")[-1])
 
-            # yaw not negative number
-            if (float(i[2][1]) < 0):
-                i[2][1] = str(2 * math.pi + float(i[2][1]))
+            # image
+            image = Image.open(i[1])
+            resizedImage = image.resize(imageResolution)
+            resizedImage.save("./data/" + i[1].split("/")[-1])
 
-            # roll not negative number
-            if (float(i[2][2]) < 0):
-                i[2][2] = str(2 * math.pi + float(i[2][2]))
+            # pitch, yaw, roll
+            with open("./data/" + i[1].split("/")[-1].replace("_photo.jpg", "") + ".csv", mode='w', newline='') as file:
+                writer = csv.writer(file)
 
-            writer.writerow(i[2])
+                # yaw not negative number
+                if (float(i[2][1]) < 0):
+                    i[2][1] = str(2 * math.pi + float(i[2][1]))
+
+                # roll not negative number
+                if (float(i[2][2]) < 0):
+                    i[2][2] = str(2 * math.pi + float(i[2][2]))
+
+                writer.writerow(i[2])
+        except:
+            continue
 
 if __name__ == '__main__':
     data = getData()
