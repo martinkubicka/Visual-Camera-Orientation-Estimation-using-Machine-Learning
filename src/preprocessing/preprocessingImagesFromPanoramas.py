@@ -100,8 +100,6 @@ def preprocess(data):
             perspectiveToEquirectangular(perspectiveOutputPath, FOV, pitch, yaw, roll)
 
             saveToCsv(pitch, yaw, roll, "./dataImagesFromPanoramas/" + i.replace("_panorama.jpg", ".csv"))
-
-            return
         except:
             continue
 
