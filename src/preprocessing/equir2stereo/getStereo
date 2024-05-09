@@ -1,0 +1,23 @@
+## @file getStereo
+#  @author Martin Kubicka (xkubic45@stud.fit.vutbr.cz)
+#  @date 2024-04-14
+#  @brief Bash script for executing cpp implementation for converting equirectangular projection to stereographic
+
+directory="./in/" # input directory
+target_directory="./dataset/" # output directory
+
+if [ ! -d "$target_directory" ]; then
+    mkdir -p "$target_directory"
+fi
+
+for file in "$directory"*
+do
+    if [[ "$file" == *.csv ]]; then
+        cp "$file" "$target_directory"
+        continue
+    fi
+
+    ./src/main $file $directory $target_directory
+done
+
+### End of getStereo ###

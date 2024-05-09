@@ -17,8 +17,8 @@ class Perspective:
         merge_image = np.zeros((height, width, 3))
         merge_mask = np.zeros((height, width, 3))
 
-        for img_dir, [FOV, YAW, PITCH, ROLL] in zip(self.img_array, self.F_T_P_array):
-            per = P2E.Perspective(img_dir, FOV, YAW, PITCH, ROLL)  # Load perspective image
+        for img_dir, [FOV, YAW, PITCH] in zip(self.img_array, self.F_T_P_array):            
+            per = P2E.Perspective(img_dir, FOV, YAW, PITCH)  # Load perspective image
             img, mask = per.GetEquirec(height, width)  # Specify parameters(height, width)
             merge_image += img
             merge_mask += mask

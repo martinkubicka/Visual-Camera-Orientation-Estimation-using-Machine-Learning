@@ -1,0 +1,12 @@
+lie_learn
+matplotlib
+numpy
+opencv_python
+Pillow
+pynvrtc
+python-dotenv
+Requests
+scikit_learn
+torch
+torchvision
+py360convert

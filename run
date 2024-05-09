@@ -1,0 +1,66 @@
+#!/bin/bash
+
+source venv/bin/activate
+echo "Choose a program to execute:"
+echo "1. SPPAI dataset generator"
+echo "2. PAC dataset generator"
+echo "3. Equirectangular to stereographic projection converter"
+echo "4. Cylindrical geoPose to equirectangular projection converter"
+echo "5. PACNoRollProb dataset generator"
+echo "6. PACNoRollYawProb dataset generator"
+echo "7. S2CNN model training"
+echo "8. SphereNetModel model training"
+echo "9. SphereNetProbModel model training"
+echo "10. Model evaluation for pitch or yaw angle"
+
+read -p "Enter the script number: " choice
+
+case $choice in
+  1)
+    cd src/datasetGenerator
+    python datasetGenerator.py
+    cd ../..
+    ;;
+  2)
+    python src/preprocessing/PAC/preprocessing.py
+    ;;
+  3)
+    make -C ./src/preprocessing/equir2stereo/
+    chmod +x ./src/preprocessing/equir2stereo/getStereo
+    cd src/preprocessing/equir2stereo/
+    ./getStereo
+    cd ../../..
+    ;;
+  4)
+    python src/preprocessing/geoPose/preprocessing.py
+    ;;
+  5)
+    python src/preprocessing/Probability/PitchYaw/preprocessing.py
+    ;;
+  6)
+    python src/preprocessing/Probability/Yaw/preprocessing.py
+    ;;
+  7)
+    cd src/COESCNN/S2CNNModel
+    python main.py
+    cd ../../..
+    ;;
+  8)
+    cd src/COESCNN/SphereNetModel
+    python main.py
+    cd ../../..
+    ;;
+  9)
+    cd src/COESCNN/SphereNetProbModel
+    python main.py
+    cd ../../..
+    ;;
+  10)
+    cd src/testing
+    python test.py
+    cd ../..
+    ;;
+  *)
+    echo "Invalid choice. Please enter a valid script number."
+    ;;
+esac
